@@ -1,0 +1,8 @@
+# downloads and caches of the generator (OpenStreetMap answers, elevation tiles)
+cache/
+__pycache__/
+*.pyc
+# the generator's own output folders
+out/
+# backups made while trying a package out
+*.bak*
