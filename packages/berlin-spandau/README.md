@@ -4,7 +4,7 @@ Package for the stock map **Berlin-Spandau** of OMSI 2, which every owner has.
 
 ## What it adds
 
-- **From OpenStreetMap:** water, green areas, woods, sports grounds, built-up land, rivers, rail and district borders (the surface), the
+- **From OpenStreetMap:** water, green areas, woods, sports grounds, built-up land, rivers, rail (drawn in rail colours that stand out from the roads) and district borders (the surface), the
   districts' names (11 districts, shown as a faint watermark), named streets with their speed limits (looked up to say which street
   you are on and what limit it has), stations (9 markers), and the relief as contour lines every metre (real terrain, heights above
   sea level).

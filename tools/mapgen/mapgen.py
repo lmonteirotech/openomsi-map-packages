@@ -92,6 +92,8 @@ def write_manifest(path, name, grid, mode, north, credit_extra):
         lines += ["# the map is not aligned with reality: " + ("the real layers are bent to the map's own roads" if mode == "fitted" else
                   "the roads, stops, routes and timetables are the map's own; only the main water is real, set by north, scale and position"),
                   "alignment   = fitted"]
+    lines += ["", "# the railway stands out from the roads: amber on the dark map, brown on the light one", "rail            = #f2b84b", "rail_edge       = #2b2208",
+              "light_rail      = #8a5a00", "light_rail_edge = #fff3d1"]
     lines += ["", "player      = triangle", "# real north lies this many degrees clockwise from the map's own up (the map is turned in the editor)",
               f"north       = {north:.1f}", "player_free = #ffffff", "player_line = #5588c7", "player_brt  = #1e7b34"]
     if credit_extra:
@@ -204,11 +206,14 @@ def main():
     # 5 ---------------------------------------------------------------------------------------------------
     step(5, "the map's own tiles" if mode == "own" else "the real layers from OpenStreetMap" + (" (shore only)" if mode == "shore" else ""))
     if mode == "own":
-        surf = ownmap.build_own_surface(map_dir, grid, tiles, a.out, relief=a.relief)
+        surf = ownmap.build_own_surface(map_dir, grid, tiles, a.out, relief=a.relief, omsi=a.omsi)
     else:
         surf = surface.build_surface(g, tiles, a.out, a.cache, profile="shore" if mode == "shore" else "full",
                                      contours=0.0 if mode == "shore" else a.relief)
-    print(f"  surface.oms: {surf['bytes'] / 1e6:.2f} MB, {surf['chunks']} chunks")
+    if mode in ("shore", "fitted"):
+        # the railway is the map's own: its splines carry rail lanes. Drawn as a railway (class 1), not left to look like a road
+        ownmap.add_rails(os.path.join(a.out, "surface.oms"), a.omsi, map_dir, grid, replace=True)
+    print(f"  surface.oms: {os.path.getsize(os.path.join(a.out, 'surface.oms')) / 1e6:.2f} MB")
 
     # 6 ---------------------------------------------------------------------------------------------------
     step(6, "checking and writing")

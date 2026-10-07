@@ -9,13 +9,14 @@ the map).
   **north** (172.2 degrees: the map is drawn turned) and position. The map is not aligned with reality (to meet it the real city would
   have to be bent by kilometres in places), so the package does **not** carry the real streets, blocks, districts or relief: only
   the shore, set so that **no road of the map lies in the water** (checked against every road of the map).
+- **The railway, from the map itself:** the map's own rail splines (the ones that carry rail lanes: 613 pieces, tram and railway) are in the surface as the railway, which the city map draws as a railway and not as a road, in rail colours that stand out from the roads (amber on the dark map, brown on the light one; see `manifest.cfg`).
 - **From the map's own timetable (not from OpenStreetMap):** 28 lines (22 bus, 6 tram, the tram network from the map's own `_tram`
   timetable files) with their ways on the map's own roads, stops with their names, itineraries and times. The stops and the roads are
   the map's, whatever the real city looks like.
 
 ## Files
 
-`openomsi-realmap/` holds `manifest.cfg` (north, `alignment = fitted`, the tram vehicle kind), `surface.oms` (24 KB) and `lines.lin`.
+`openomsi-realmap/` holds `manifest.cfg` (north, `alignment = fitted`, the tram vehicle kind, the rail colours), `surface.oms` (44 KB: the shore and the railway) and `lines.lin`.
 The format is in [docs/MAP_PACKAGE.md](../../docs/MAP_PACKAGE.md).
 
 ## Made with

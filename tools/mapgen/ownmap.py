@@ -34,6 +34,7 @@ from geom import rdp
 
 CHUNK = 2000.0
 ORIGIN = [0.0, 0.0]      # the surface's origin (set per run): geometry is stored relative to it
+OMSI = [None]            # the OMSI 2 folder, to read the .sli files of the splines (what lanes a spline carries)
 
 # --- what is what: patterns on the lower-case path of the .sco / .sli file --------------------------------------------
 TREES = r"tree|baum|bäume|arbor|fir_|fichte|pine|kiefer|shrub|busch|bush|hedge|hecke|forest|wald|drzew|laub|birke|eiche|palm|conifer"
@@ -131,8 +132,9 @@ def area_of(points, cell, reach, min_cells, grow, box):
     return m, x0 - cell, y0 - cell
 
 
-def build_own_surface(map_dir, grid, tiles, out_dir, relief=0.0, log=print):
+def build_own_surface(map_dir, grid, tiles, out_dir, relief=0.0, log=print, omsi=None):
     """Writes surface.oms from the map's own tiles. Returns a summary."""
+    OMSI[0] = omsi
     splines, objects = scan(map_dir, grid)
     for l in kinds_report(splines, objects):
         log("  " + l)
@@ -168,7 +170,7 @@ def build_own_surface(map_dir, grid, tiles, out_dir, relief=0.0, log=print):
     for sli, pts in splines:
         if len(pts) < 2:
             continue
-        if re.search(RAIL_SPLINE, sli) and not re.search(NOT_RAIL, sli):
+        if is_rail(OMSI[0], sli):
             put(1, 4.0, pts)
             n_rail += 1
         elif re.search(WATER_SPLINE, sli):
@@ -190,3 +192,72 @@ def build_own_surface(map_dir, grid, tiles, out_dir, relief=0.0, log=print):
     path = os.path.join(out_dir, "surface.oms")
     surfacefile.write_surface(surf, path)
     return dict(bytes=os.path.getsize(path), chunks=len(surf["chunks"]), objects=len(objects), splines=len(splines), contours=n_c)
+
+
+# ---------------------------------------------------------------------------------------------------- the railway
+_KINDS = {}
+
+
+def path_kinds(omsi, sli):
+    """{'0': n, '1': n, '2': n, '3': n}: how many lanes of each kind a spline file carries (0 street, 1 sidewalk, 2 RAIL, 3 air)."""
+    if sli in _KINDS:
+        return _KINDS[sli]
+    k = {}
+    f = os.path.join(omsi, sli.replace("/", os.sep)) if omsi else ""
+    if f and os.path.isfile(f):
+        t = [x.strip() for x in omsimap.rd(f).split("\n")]
+        for i, l in enumerate(t):
+            if l == "[path]" and i + 1 < len(t) and t[i + 1] in ("0", "1", "2", "3"):
+                k[t[i + 1]] = k.get(t[i + 1], 0) + 1
+    _KINDS[sli] = k
+    return k
+
+
+def is_rail(omsi, sli):
+    """A spline of the railway or the tramway: it carries RAIL lanes (kind 2) and no street lane, or, with no lane at all, has the
+    name of a rail. A street with tram tracks in it is a street; a catenary wire is no rail."""
+    if re.search(NOT_RAIL, sli):
+        return False
+    k = path_kinds(omsi, sli)
+    if k.get("0"):
+        return False
+    return bool(k.get("2")) or bool(re.search(RAIL_SPLINE, sli))
+
+
+def add_rails(surface_path, omsi, map_dir, grid, replace=False, log=print):
+    """Puts the map's OWN rails (class 1, the class the city map draws as a railway) into an existing surface.oms, in its own frame.
+    With replace=True the rail lines the surface had (OpenStreetMap's, bent to the map) go. Returns the number of pieces."""
+    surf = surfacefile.read_surface(surface_path)
+    ox, oy = surf["origin"]
+    OMSI[0] = omsi
+    splines, _ = scan(map_dir, grid)
+    if replace:
+        for k, (f, ls, lb) in surf["chunks"].items():
+            surf["chunks"][k] = (f, [l for l in ls if l[0] != 1], lb)
+    n = 0
+    chunk = surf["chunk"]
+    for sli, pts in splines:
+        if len(pts) < 2 or not is_rail(omsi, sli):
+            continue
+        rel = rdp([(x - ox, y - oy) for x, y in pts], 1.0)
+        cur, key = [rel[0]], None
+        pieces = []
+        for p, q in zip(rel, rel[1:]):
+            kk = (math.floor((p[0] + q[0]) / 2 / chunk), math.floor((p[1] + q[1]) / 2 / chunk))
+            if key is None:
+                key = kk
+            if kk != key:
+                pieces.append((key, cur))
+                cur, key = [p], kk
+            cur.append(q)
+        pieces.append((key, cur))
+        for k, c in pieces:
+            if len(c) < 2:
+                continue
+            f, ls, lb = surf["chunks"].get(k, ({}, [], []))
+            ls.append((1, 0, 4.0, 0xFFFFFFFF, [v for p in c for v in p]))
+            surf["chunks"][k] = (f, ls, lb)
+        n += 1
+    surfacefile.write_surface(surf, surface_path)
+    log(f"  the map's own rails: {n} pieces put in {surface_path}")
+    return n
