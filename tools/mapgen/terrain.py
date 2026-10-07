@@ -4,11 +4,11 @@
 Each file is the number of cells (60), then (cells + 1)^2 float32 heights in metres, row by row (the row is the
 position in the tile along y, the column along x); a tile's edge samples are its neighbours' too. The tiles are laid
 side by side on one grid, in metres of the author's tile grid (tile column * grid + position in the tile), and the
-contour lines are traced on it. The writers of surface.oms (osm_to_package.py, exportar_openomsi_realmap.py) put them
+contour lines are traced on it. The surface writers (surface.py, ownmap.py) put them
 in the package as line class 5, `width` = the height in metres, and class 6 for the index lines (every fifth), which
 the maps draw heavier. It is an option of the generators: --contours <interval in metres>.
 
-  python terrain_contours.py --map-dir "<OMSI 2>/Maps/RMG Leste" --grid 585.795 --interval 5
+  python terrain_contours.py --map-dir "<OMSI 2>/Maps/<Map>" --grid 300 --interval 5
 """
 import argparse
 import glob

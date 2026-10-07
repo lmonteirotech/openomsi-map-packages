@@ -34,9 +34,9 @@ what was found and whether the rules hold.
 
 | Mode | When (auto) | Carries |
 |---|---|---|
-| `exact` | the map is on `[worldcoordinates]` and the tile index alone puts its roads on the real streets (median ≤ 15 m, 90% ≤ 50 m) | all real layers, as they are (Berlin-Spandau) |
-| `fitted` | the real city must be bent by at most 120 m (90% of the roads) to meet the map | all real layers, bent to the map's own roads (RMG Leste) |
-| `shore` | the map is out of proportion with the city (the real city would have to be bent by more) | **north and shore only**: water areas of 2 ha or more, rivers and canals; every road, stop, line and time is the map's own; the water is checked so that no road lies in it (Projekt Szczecin) |
+| `exact` | the map is on `[worldcoordinates]` and the tile index alone puts its roads on the real streets (median ≤ 15 m, 90% ≤ 50 m) | all real layers, as they are (Berlin-Spandau, in `packages/`) |
+| `fitted` | the real city must be bent by at most 120 m (90% of the roads) to meet the map | all real layers, bent to the map's own roads (a map that is the city, a little bent) |
+| `shore` | the map is out of proportion with the city (the real city would have to be bent by more) | **north and shore only**: water areas of 2 ha or more, rivers and canals; every road, stop, line and time is the map's own; the water is checked so that no road lies in it (Projekt Szczecin, in `packages/`) |
 | `own` | `--mode own`, or a map without `[worldcoordinates]` and without `--at` / `--place` (a fictional map; no OpenStreetMap, no network) | the map's **own tiles measured**: woods (where tree objects are dense), buildings, water, sports grounds, rails, water courses, and the relief of its own ground (`--relief`); plus the lines, stops and timetables. What is what comes from the NAME of the object / spline file: the patterns at the top of `ownmap.py`, to be edited for the content of the map |
 
 The limits are constants at the top of `mapgen.py` (`EXACT_MEDIAN`, `EXACT_P90`, `MIN_COVER`, `FITTED_BEND_P90`, `WATER_MARGIN`);

@@ -194,31 +194,23 @@ u32  n_labels  ; n_labels x { u8 kind, u8 rank, u32 name, f32 x, f32 y }    name
 
 ## 7. Making a package
 
-openOMSI only reads. The files are made beforehand by the map author's own tools from whatever the
-author has (OpenStreetMap, a GIS, a hand-made map): the format asks for nothing but the files of
-section 1, so any source and any tool will do. The generators that made the examples are open and
-small; between them they cover:
+openOMSI only reads. The files are made beforehand by the map author's own tools from whatever the author has
+(OpenStreetMap, a GIS, a hand-made map): the format asks for nothing but the files of section 1, so any source and any tool
+will do. The generator of this repository, [tools/mapgen](../tools/mapgen/), is one way, in one run for any OMSI 2 map:
 
-- **the surface and the named streets with their limits** from OpenStreetMap (`osm_to_package.py`), for a map
-  on web-mercator tiles, or, with `--calibration`, for any map once its place on the globe is known;
-- **only the north and the shore** (`osm_to_package.py --minimal`): the real water (areas of 2 ha or more, rivers
-  and canals) and nothing else, no streets, blocks, green, rail, borders, districts, names, stations or relief;
-  for a map the real streets cannot be laid on (section 3, "A minimal package");
-- **the place of a map that has no `[worldcoordinates]`** (`calibrate_by_stops.py`: the map's bus stops against
-  OpenStreetMap's, by name; `refine_calibration.py`: the map's own roads laid on the real streets, with a local
-  correction): the `fitted` of section 3;
-- **blocks where the data has none** (a city whose OpenStreetMap has streets but no land-use areas or buildings:
-  the blocks are what the streets enclose, by inverting them: `rmg_osm_ruas.py`), so that it looks like a map
-  whose data has the blocks;
-- **the lines, their eras, the stations and the kinds of vehicle** from the map's own timetable, links and tiles
-  (`ttdata_to_lines.py`), never from the real world: a map set in 1989 gets the lines of 1989 and of the
-  changes after it, as the game runs them;
-- **the relief** from public elevation tiles (`real_contours.py`; `--contours <metres>` of the generators), heights
-  above sea level.
+- **the map's own lines**, their eras, the stations and the kinds of vehicle from the map's timetable, links and tiles
+  (`omsimap.py`), never from the real world: a map set in 1989 gets the lines of 1989 and of the changes after it, as the
+  game runs them;
+- **the place of the map** on the real Earth, by comparing its stop, street and neighbourhood names and its bus routes with
+  OpenStreetMap, and its roads with the real streets (`locate.py`): the `fitted` of section 3;
+- **the surface and the named streets with their limits** from OpenStreetMap (`surface.py`): all real layers when the map
+  fits the city, **only the shore** (`mode shore`, the minimal package of section 3) when it does not;
+- **the map's own tiles alone** (`mode own`, `ownmap.py`) for a made-up map: woods, buildings, water, sports grounds, rails and
+  the relief of its own ground;
+- **the relief** from public elevation tiles (`relief.py`; `--relief <metres>`), heights above sea level.
 
-Two real packages to read next to this page: [examples/map-package-spandau](examples/map-package-spandau/) is made from
-OpenStreetMap for the stock map Berlin-Spandau, so anyone can try it, and its README (with the script that made it)
-documents how; [examples/map-package](examples/map-package/) is for the map RMG Leste.
+The packages of [packages/](../packages/) were made this way: Berlin-Spandau (a map on `[worldcoordinates]`, shown as it is) and
+Projekt Szczecin (a map that is not aligned with reality: only the shore).
 
 ## 8. What the package carries besides the surface
 
