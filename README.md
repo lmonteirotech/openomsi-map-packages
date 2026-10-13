@@ -133,6 +133,48 @@ A folder (`--out`) that becomes `openomsi-realmap`:
 3. Compare with the real world and run again with another mode or `--at` if it looks wrong. A package that is wrong is easy to delete:
    it is one folder and OMSI 2 itself never reads it.
 
+### Customising the icons
+
+The pictures on the map (stations and stops) are plain files, so you can change them without running the generator again.
+
+**What the generator makes.** Three 96 x 96 pictograms in `icons/`, drawn by `tools/mapgen/icons.py` (no operator's logo in them):
+
+| File | Picture | Used for |
+|---|---|---|
+| `stop.png` | yellow H on a green disc | bus and tram stops, and any station that is not metro or S-Bahn |
+| `sbahn.png` | white S on a green disc | stations of rail lines whose number starts with S and a digit (S1, S25, ...) |
+| `ubahn.png` | white U on a blue square | stations of metro lines |
+
+`markers.cfg` has one line per station, and each line names the picture it uses:
+
+```
+# icon | width in pixels at interface size 1 | x | y | name
+marker = icons/ubahn.png | 24 | 894181.3 | 4195744.7 | U Altstadt Spandau
+```
+
+**Change a picture for the whole package.** Replace the PNG in `openomsi-realmap/icons/` with your own, with the same name. Straight
+(not premultiplied) alpha, up to 1024 x 1024 px; the generator's own are 96 x 96. The width on the map, in pixels at interface
+size 1, is the second column of `markers.cfg` (24 for the generated ones).
+
+**Use another picture for some stations.** Put the new PNG in `icons/` (any name, no `..` in the path), then edit the `icon` and the
+width of the lines of those stations in `markers.cfg`:
+
+```
+marker = icons/terminal.png | 30 | 1200.5 | 840.0 | Central Terminal
+marker = icons/depot.png    | 54 | 1650.0 | 410.5 | Bus depot
+```
+
+**Add a marker** (a terminal, a depot, a landmark): a new line with the place in **metres of the map's own grid** (the same numbers
+as in the other lines), not latitude and longitude. A picture that cannot be read leaves out only its own lines.
+
+**Without Pillow** the generator writes no icons and the stations are not drawn; install Pillow and run again, or put your own PNGs
+in `icons/` and write the lines of `markers.cfg` yourself. A new run of `mapgen.py` writes `icons/` and `markers.cfg` again, so keep
+your versions outside the output folder and copy them over the result.
+
+**The player's marker** (the arrow of the bus) is changed in `manifest.cfg`, not with a picture: `player = triangle` and the colours
+`player_free`, `player_line`, `player_brt` (see section 8.2 of [docs/MAP_PACKAGE.md](docs/MAP_PACKAGE.md)). The format of
+`markers.cfg` is in section 8.1 of the same file.
+
 ### Later changes without a full run
 
 ```
