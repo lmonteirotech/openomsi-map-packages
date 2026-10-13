@@ -13,6 +13,28 @@ a map made for both games loses nothing. The format is described in [docs/MAP_PA
 | [berlin-spandau](packages/berlin-spandau/) | Berlin-Spandau (stock map of OMSI 2) | water, green areas, woods, rivers, rail, district borders and names, streets with their speed limits, stations, relief (1 m contour lines), and the lines of every era the map has (bus, metro, rail) with timetables | OpenStreetMap (ODbL) + the map's own timetable |
 | [projekt-szczecin](packages/projekt-szczecin/) | Projekt Szczecin 4.0.1 | the shore (the water of the real Szczecin set by north and position; the map itself is not aligned with reality) and the lines of the map (bus and tram) with timetables, on the map's own roads | OpenStreetMap (ODbL) + the map's own timetable |
 
+## What a package adds
+
+Screenshots of the city map of openOMSI (Shift+M), taken with a development build that has the changes proposed in [openOMSI #1313](https://github.com/openOMSI-org/openOMSI/issues/1313) (not all merged yet). The maps belong to their authors; the data of the packages is (c) OpenStreetMap contributors (ODbL).
+
+**Berlin-Spandau**: the map as it is without a package (only the lanes), and with the package (water, green land, rivers, rail, district borders and names, stations as icons, the street and the district under the player, the speed limit):
+
+| Without a package | With the Berlin-Spandau package |
+|---|---|
+| ![Berlin-Spandau without a package: lanes on a dark background](docs/images/spandau-without-package.jpg) | ![Berlin-Spandau with the package: water, green land, rivers, rail, districts and stations](docs/images/spandau-city-map.jpg) |
+
+The lines of the map, from its own timetable, with a departure picked: the time at each stop on the map and in the list.
+
+![Berlin-Spandau, line 5 with its timetable: times at every stop](docs/images/spandau-lines-timetable.jpg)
+
+The relief of the real terrain (contour lines every metre of height, with the heights):
+
+![Berlin-Spandau with contour lines and heights](docs/images/spandau-relief.jpg)
+
+**Projekt Szczecin**: the map is not aligned with reality, so its package carries only the shore and the rivers of the real city, set by north and position, and the lines of the map. The roads stay the map's own, and none lies in the water.
+
+![Projekt Szczecin: the shore and the rivers under the map's own roads](docs/images/projekt-szczecin-shore.jpg)
+
 ## Using a package
 
 1. Copy the package's `openomsi-realmap` folder to `Maps/<Map>/openomsi-realmap/` in openOMSI's content folder (the folder next to
