@@ -15,7 +15,7 @@ a map made for both games loses nothing. The format is described in [docs/MAP_PA
 
 ## What a package adds
 
-Screenshots of the city map of openOMSI (Shift+M), taken with a development build that has the changes proposed in [openOMSI #1313](https://github.com/openOMSI-org/openOMSI/issues/1313) (not all merged yet). The maps belong to their authors; the data of the packages is (c) OpenStreetMap contributors (ODbL).
+Screenshots of the city map of openOMSI (Shift+M), taken with a development build that has the changes proposed in [openOMSI #1313](https://github.com/openOMSI-org/openOMSI/issues/1313) (not all merged yet). The maps and their timetables belong to their authors, who are credited with each package. Only the data taken from OpenStreetMap (water, green land, rivers, rail, borders, districts, streets, relief) is (c) OpenStreetMap contributors, under the ODbL; the lines, stops and times come from each map's own timetable, not from OpenStreetMap.
 
 **Berlin-Spandau**: the map as it is without a package (only the lanes), and with the package (water, green land, rivers, rail, district borders and names, stations as icons, the street and the district under the player, the speed limit):
 
