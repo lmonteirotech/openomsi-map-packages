@@ -60,6 +60,10 @@ The railway of an OMSI 2 map is made of splines whose file carries **rail lanes*
 python addrails.py --omsi "C:/Games/OMSI 2" --map "Projekt_Szczecin" --package path/to/openomsi-realmap [--replace]
 ```
 
+## The road network
+
+Roads of a big city map are checked and joined with `audit.py`, `dedupe.py` and `connect.py`; what goes wrong, how it is found and mended is in [docs/ROAD-NETWORK.md](../../docs/ROAD-NETWORK.md).
+
 ## Files
 
 ```
@@ -76,6 +80,9 @@ terrain.py      the map's own ground (.terrain files) as contour lines
 surfacefile.py  reads and writes surface.oms in memory
 addrails.py     the map's own railway into an existing package, with colours that stand out
 check.py        the rules (no road in water, no jump in a way) and REPORT.md
+audit.py        the road network audit: tiny, duplicate, split, spike, groups, gaps, crossings (see docs/ROAD-NETWORK.md)
+connect.py      joins a road file: unir, ligar, limpar, grupos; medir counts groups and loose ends
+dedupe.py       removes duplicates and spikes the audit finds (join again after it)
 icons.py        plain pictograms for the railway stations
 ```
 
