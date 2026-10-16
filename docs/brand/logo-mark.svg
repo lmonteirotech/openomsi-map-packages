@@ -1,10 +1,12 @@
-<svg width="200" height="200" viewBox="0 0 200 200" fill="none" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="openOMSI Map Packages"><title>openOMSI Map Packages</title><g>
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 200 200" width="200" height="200"><g>
   <rect x="0" y="0" width="200" height="200" rx="44" fill="#F78034"/>
-  <g fill="none" stroke="#fff" stroke-opacity=".55" stroke-width="7" stroke-linecap="round">
-    <path d="M18 150 C52 118 86 160 120 128 S168 104 184 112"/>
-    <path d="M18 174 C56 142 92 184 128 152 S172 132 184 138"/>
-    <path d="M18 126 C48 98 80 134 112 104 S156 80 184 88"/>
-  </g>
-  <path d="M100 30 C73 30 54 50 54 75 C54 106 100 150 100 150 C100 150 146 106 146 75 C146 50 127 30 100 30 Z" fill="#fff"/>
-  <circle cx="100" cy="75" r="17" fill="#F78034"/>
+  <circle cx="100" cy="100" r="72" fill="#fff" fill-opacity=".14" stroke="#fff" stroke-width="8"/>
+  <circle cx="100" cy="100" r="45" fill="none" stroke="#fff" stroke-opacity=".55" stroke-width="4"/>
+  <circle cx="100" cy="100" r="22" fill="none" stroke="#fff" stroke-opacity=".55" stroke-width="4"/>
+  <path d="M100 34 V166 M34 100 H166" stroke="#fff" stroke-opacity=".35" stroke-width="3" fill="none"/>
+  <path d="M100 100 L36.1 76.7 A68 68 0 0 1 82.4 34.3 Z" fill="#fff" fill-opacity=".45"/>
+  <path d="M62 138 C76 120 86 124 100 100 S124 84 138 66" stroke="#fff" stroke-width="7" stroke-linecap="round" fill="none"/>
+  <circle cx="132" cy="132" r="6" fill="#fff"/>
+  <circle cx="64" cy="74" r="5" fill="#fff" fill-opacity=".8"/>
+  <path d="M100 83 L113 112 L100 105 L87 112 Z" fill="#fff" stroke="#F78034" stroke-width="3" stroke-linejoin="round"/>
 </g></svg>
