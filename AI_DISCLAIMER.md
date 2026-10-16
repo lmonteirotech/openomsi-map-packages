@@ -13,4 +13,4 @@ What this means for you:
   [Issues](https://github.com/lmonteirotech/openomsi-map-packages/issues).
 - **No data of the maps comes from the AI.** The packages are worked out from the maps and from OpenStreetMap (see
   [LICENSE-DATA.md](LICENSE-DATA.md)); the AI writes the code that does it, and takes nothing from the maps' files.
-- **The licence is the same for everything**: MIT for code and documentation ([LICENSE](LICENSE)).
+- **The licences are what each file says.** The generator code and the documents are MIT ([LICENSE](LICENSE)); the OpenStreetMap data is ODbL ([LICENSE-DATA.md](LICENSE-DATA.md)); the **Map Package Creator** app is proprietary freeware under its own [EULA](app/EULA.txt). The AI does not change any of them: whatever it wrote is released by Leo under the licence of the part it belongs to.
