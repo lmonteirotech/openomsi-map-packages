@@ -1,0 +1,18 @@
+openOMSI/openHUD Map Package Creator (ombr-mapcreator.exe)
+Copyright (c) 2026 LMonteiro (Leo Monteiro) - github.com/lmonteirotech - leomonteiro.eti.br - omsimods.com.br
+
+This program is FREEWARE, not open source. It is licensed under the End-User Licence Agreement in EULA.txt: free to use and to share
+unchanged and complete, NOT to modify, reverse engineer, sell or rebrand.
+
+The files that identify this distribution, which must stay together with the executable:
+  LICENSE.txt                this file
+  EULA.txt                   the agreement (English and Portuguese)
+  THIRD-PARTY-NOTICES.txt    the open-source components inside the executable, with their licences
+
+Other parts of the repository have their own licences:
+  - the generator code (tools/mapgen) and the documents: MIT (../LICENSE);
+  - the data taken from OpenStreetMap inside packages: ODbL 1.0 (../LICENSE-DATA.md);
+  - the maps the packages are worked out from belong to their authors (../CREDITS.md).
+
+Programa FREEWARE, não open source: licenciado pelo contrato de EULA.txt (inglês e português): uso e compartilhamento livres, sem alterações e completo;
+proibido modificar, fazer engenharia reversa, vender ou renomear.

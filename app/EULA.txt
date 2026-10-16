@@ -1,0 +1,53 @@
+END-USER LICENCE AGREEMENT (EULA) - openOMSI/openHUD Map Package Creator (ombr-mapcreator.exe)
+Copyright (c) 2026 LMonteiro (Leo Monteiro) - github.com/lmonteirotech - leomonteiro.eti.br - omsimods.com.br
+
+(Versão em português abaixo.)
+
+1. WHAT THIS COVERS. This agreement covers the executable program "ombr-mapcreator.exe" (the Map Package Creator) and the files that come with it.
+   It does not cover the generator code in tools/mapgen of the repository openomsi-map-packages, which is under the MIT licence (LICENSE in the
+   repository), nor the third-party components inside the executable, which keep their own licences (THIRD-PARTY-NOTICES.txt).
+2. YOU MAY: (a) use the program free of charge, for personal, educational or commercial work; (b) copy and share the program, unchanged and
+   complete (the executable together with LICENSE.txt, EULA.txt and THIRD-PARTY-NOTICES.txt), at no charge; (c) share the packages you make with it,
+   under the licence you choose, respecting the licences of the maps and of the data they come from.
+3. YOU MAY NOT: (a) modify, patch, translate the binary, or make derivative works of the executable; (b) decompile, disassemble or otherwise try to
+   obtain the source code of the viewer part of the program, except where the law allows it despite this clause; (c) remove or change the
+   copyright notices, the name of the author or the version information; (d) sell, rent or lend the program, or include it in a paid product;
+   (e) present the program as yours or as made by anyone else.
+4. THE MAPS AND THE DATA ARE NOT YOURS BY USING THIS PROGRAM. The program reads maps of OMSI 2 that belong to their authors. The packages it makes hold
+   only what is worked out from them. Credit the map and its authors whenever you share a package, and respect each map's own terms (some forbid
+   modifying the map or limit where it may be published). Data from OpenStreetMap is (c) OpenStreetMap contributors, ODbL 1.0.
+5. TRADEMARKS. OMSI and OMSI 2 are trademarks of their respective owners. openOMSI belongs to the openOMSI project (github.com/openOMSI-org/openOMSI),
+   Project Depot to its maintainers, OmsiLaunch and openHUD to their author. This program is independent: it is not affiliated with or endorsed by them
+   (unless a repository of theirs says otherwise).
+6. NO WARRANTY. The program is provided "as is", without warranty of any kind. The author is not liable for damage or loss of data from its use.
+   The program only reads the folders you point it to and writes the package folder you ask for (keeping a backup copy of the one it replaces), but
+   keep your own backups. It is developed with an AI partner (see AI_DISCLAIMER.md in the repository) and, like any software, may have mistakes.
+7. TERMINATION. The rights of section 2 end at once if you break this agreement. The author may release new versions under other terms.
+8. LAW. Brazilian law applies, with the courts of the author's domicile, without removing any right you have as a consumer by law.
+
+-------------------------------------------------------------------------------------------------------------------------------------------
+
+CONTRATO DE LICENÇA DE USO (EULA) - openOMSI/openHUD Map Package Creator (ombr-mapcreator.exe)
+Copyright (c) 2026 LMonteiro (Leo Monteiro) - github.com/lmonteirotech - leomonteiro.eti.br - omsimods.com.br
+
+1. O QUE ISTO COBRE. Este contrato cobre o programa executável "ombr-mapcreator.exe" (o Map Package Creator) e os arquivos que o acompanham. Não
+   cobre o código do gerador em tools/mapgen do repositório openomsi-map-packages, que está sob a licença MIT (LICENSE no repositório), nem os
+   componentes de terceiros dentro do executável, que mantêm suas licenças (THIRD-PARTY-NOTICES.txt).
+2. VOCÊ PODE: (a) usar o programa gratuitamente, em trabalho pessoal, educacional ou comercial; (b) copiar e compartilhar o programa, sem alterações
+   e completo (o executável junto com LICENSE.txt, EULA.txt e THIRD-PARTY-NOTICES.txt), sem cobrar; (c) compartilhar os pacotes que fizer com ele,
+   sob a licença que escolher, respeitando as licenças dos mapas e dos dados de onde vêm.
+3. VOCÊ NÃO PODE: (a) modificar, aplicar patches, traduzir o binário ou criar obras derivadas do executável; (b) descompilar, desmontar ou tentar de
+   outra forma obter o código-fonte da parte "viewer" do programa, salvo onde a lei permitir apesar desta cláusula; (c) remover ou alterar os avisos
+   de direitos autorais, o nome do autor ou as informações de versão; (d) vender, alugar ou emprestar o programa, ou incluí-lo em produto pago;
+   (e) apresentar o programa como seu ou de outra pessoa.
+4. OS MAPAS E OS DADOS NÃO PASSAM A SER SEUS. O programa lê mapas do OMSI 2 que pertencem a seus autores. Os pacotes que ele gera têm só o que foi
+   calculado a partir deles. Dê crédito ao mapa e a seus autores sempre que compartilhar um pacote e respeite os termos de cada mapa (alguns
+   proíbem modificar o mapa ou limitam onde pode ser publicado). Os dados do OpenStreetMap são (c) colaboradores do OpenStreetMap, ODbL 1.0.
+5. MARCAS. OMSI e OMSI 2 são marcas de seus respectivos donos. O openOMSI pertence ao projeto openOMSI (github.com/openOMSI-org/openOMSI), o Project
+   Depot a seus mantenedores, o OmsiLaunch e o openHUD a seu autor. Este programa é independente: não é afiliado nem endossado por eles (salvo se um
+   repositório deles disser o contrário).
+6. SEM GARANTIA. O programa é fornecido "como está", sem garantia de qualquer tipo. O autor não responde por danos ou perda de dados decorrentes do uso.
+   O programa só lê as pastas que você indicar e só grava a pasta do pacote que você pedir (guardando cópia do que substitui), mas faça seus próprios
+   backups. Ele é desenvolvido com um parceiro de IA (veja AI_DISCLAIMER.md no repositório) e, como todo software, pode ter erros.
+7. RESCISÃO. Os direitos da cláusula 2 terminam imediatamente se você descumprir este contrato. O autor pode lançar novas versões com outros termos.
+8. LEI. Aplica-se a lei brasileira, com o foro do domicílio do autor, sem afastar direitos que você tenha por lei como consumidor.
