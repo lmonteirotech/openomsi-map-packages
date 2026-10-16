@@ -28,67 +28,112 @@ import re
 import numpy as np
 from scipy import ndimage
 
+import footprints
 import omsimap
+import patterns
 import surfacefile
-from geom import rdp
+from geom import rdp, triangulate
 
 CHUNK = 2000.0
 ORIGIN = [0.0, 0.0]      # the surface's origin (set per run): geometry is stored relative to it
 OMSI = [None]            # the OMSI 2 folder, to read the .sli files of the splines (what lanes a spline carries)
 
-# --- what is what: patterns on the lower-case path of the .sco / .sli file --------------------------------------------
-TREES = r"tree|baum|bäume|arbor|fir_|fichte|pine|kiefer|shrub|busch|bush|hedge|hecke|forest|wald|drzew|laub|birke|eiche|palm|conifer"
-BUILDINGS = r"haus|house|gebaeude|gebäude|building|\bbud|blok|block|kamien|halle|\bhall|shop|store|garage|fabr|factory|church|kirche|kosci|tower|hochhaus|apartment|wohn|villa|\bdom\b|dom_|warehouse|magazyn|school|szko|hotel|mall|terminal|dworzec|bahnhof|cottage|bungalow|plattenbau|office|biuro|depot|hangar"
-NOT_BUILDINGS = r"fence|zaun|pole|mast|sign|schild|light|lamp|bus_stop|haltestelle|bench|bank_|trash|müll|car_park|people|human|tree|baum|traffic|signal|wall|mauer|kabel|wire|garden_|hedge"
-WATER = r"wasser|water|woda|rzek|river|lake|teich|pond|jezior|\bsee\b|meer\b|\bsea\b|fountain"
-SPORT = r"stadion|stadium|boisko|pitch|tennis|spielplatz|playground|sport|fussball|football|basketball"
-RAIL_SPLINE = r"rail|gleis|tram|szyn|schiene|\btor\b|track"
-NOT_RAIL = r"odciag|catenary|oberleitung|fahrdraht|wire|mast|sleeper|bed|schotter|ballast"
-WATER_SPLINE = r"river|fluss|bach\b|rzek|canal|kanal|woda|water|wasser|stream"
+# --- what is what: the words of the path of the .sco / .sli file (patterns.py: en, de, pl, pt, es, fr) ---------------------
+RAIL_SPLINE = patterns.RAIL_WORDS
+NOT_RAIL = patterns.NOT_RAIL_WORDS
+WATER_SPLINE = patterns.WATER_SPLINE_WORDS
 
 # --- how objects become areas: cell size (m), reach of one object (m), smallest area kept (cells) ---------------------
 AREAS = {
-    #  name     class  pattern            cell  reach  min_cells  dilate/close (cells)
-    "forest": (4, TREES, 14.0, 22.0, 20, 2),
-    "built": (2, BUILDINGS, 8.0, 14.0, 4, 1),
-    "water": (0, WATER, 10.0, 25.0, 4, 1),
-    "sport": (5, SPORT, 10.0, 25.0, 3, 1),
+    #  category  class  cell  reach  min_cells  dilate/close (cells)
+    "forest": (4, 14.0, 22.0, 20, 2),
+    "grass": (3, 14.0, 24.0, 20, 2),
+    "farm": (6, 14.0, 26.0, 10, 2),
+    "built": (2, 8.0, 14.0, 4, 1),
+    "water": (0, 10.0, 25.0, 4, 1),
+    "sport": (5, 10.0, 25.0, 3, 1),
 }
 
 
-def scan(map_dir, grid):
-    """Splines and objects of every tile: ([(sli, [(x, y)])], [(sco, x, y)]) in metres of the map's grid."""
+def scan(map_dir, grid, headings=False, attachments=True):
+    """Splines and objects of every tile: ([(sli, [(x, y)])], [(sco, x, y)]) in metres of the map's grid;
+    with `headings`, each object is (sco, x, y, heading in degrees clockwise from north). With `attachments`, the objects of the
+    [splineAttachement] rows (houses, trees, lamps along a street) are objects too, standing where the game puts them, except
+    the kinds that are mere street furniture (patterns.py: 'other'), which would be many thousands."""
     splines, objects = [], []
     for f in sorted(glob.glob(os.path.join(map_dir, "tile_*.map"))):
         m = re.search(r"tile_(-?\d+)_(-?\d+)", f)
         ox, oy = int(m.group(1)) * grid, int(m.group(2)) * grid
         t = omsimap.rows(f)
+        order = []                     # every spline of the tile in file order: an attachment names its spline by that index
+        rows_at = []
         for i, l in enumerate(t):
             if l in ("[spline]", "[spline_h]"):
                 try:
                     x, y, h, L, r = (float(t[i + k]) for k in (6, 8, 9, 10, 11))
                 except (ValueError, IndexError):
+                    order.append(None)
                     continue
+                order.append((x, y, h, L, r))
                 splines.append((t[i + 2].strip().lower().replace("\\", "/"), omsimap.curve(x, y, h, L, r, ox, oy)))
             elif l == "[object]":
                 try:
                     a, b = float(t[i + 4]), float(t[i + 5])
                 except (ValueError, IndexError):
                     continue
-                objects.append((t[i + 2].strip().lower().replace("\\", "/"), ox + a, oy + b))
+                if headings:
+                    try:
+                        hd = float(t[i + 7])
+                    except (ValueError, IndexError):
+                        hd = 0.0
+                    objects.append((t[i + 2].strip().lower().replace("\\", "/"), ox + a, oy + b, hd))
+                else:
+                    objects.append((t[i + 2].strip().lower().replace("\\", "/"), ox + a, oy + b))
+            elif l == "[splineAttachement]" and attachments:
+                rows_at.append(i)
+        for i in rows_at:
+            sco = t[i + 2].strip().lower().replace("\\", "/")
+            if patterns.classify(sco) == "other":
+                continue
+            try:
+                k = int(t[i + 4])
+                lateral, d0 = float(t[i + 5]), float(t[i + 7])
+                rot0, interval, rng = float(t[i + 8]), float(t[i + 11]), float(t[i + 12])
+            except (ValueError, IndexError):
+                continue
+            if not (0 <= k < len(order)) or not order[k]:
+                continue
+            n = 1 if interval <= 0 else min(int(rng / interval) + 1, 600)
+            for j in range(n):
+                kk, d = k, d0 + j * max(interval, 0.0)
+                while kk + 1 < len(order) and order[kk] and order[kk + 1] and d > order[kk][3]:
+                    d -= order[kk][3]
+                    kk += 1
+                if not order[kk]:
+                    break
+                x, y, h, L, r = order[kk]
+                if d > L + 0.5 and kk + 1 >= len(order):
+                    break
+                s = max(0.0, min(d, L))
+                px, py = omsimap.curve(x, y, h, s, r, 0.0, 0.0)[-1] if s > 0 else (x, y)
+                hs = h + (math.degrees(s / r) if abs(r) > 1e-6 else 0.0)
+                c, sn = math.cos(math.radians(hs)), math.sin(math.radians(hs))
+                wx, wy = ox + px + lateral * c, oy + py - lateral * sn
+                objects.append((sco, wx, wy, hs + rot0) if headings else (sco, wx, wy))
     return splines, objects
 
 
 def kinds_report(splines, objects, top=12):
-    """What the map holds, by name, and what each pattern took: so that an author sees what to add to the patterns."""
+    """What the map holds, by name, and what each category took: so that an author sees what to add to patterns.py."""
     out = []
     from collections import Counter
     oc = Counter(o[0] for o in objects)
-    for name, (cls, pat, *_r) in AREAS.items():
-        taken = sum(n for s, n in oc.items() if re.search(pat, s) and not (name == "built" and re.search(NOT_BUILDINGS, s)))
-        out.append(f"{name}: {taken} of {len(objects)} objects")
-    left = Counter({s: n for s, n in oc.items() if not any(re.search(p[1], s) for p in AREAS.values())})
-    out.append("objects no pattern took (most frequent): " + ", ".join(f"{os.path.basename(s)} x{n}" for s, n in left.most_common(top)))
+    cat = Counter()
+    for s, n in oc.items():
+        cat[patterns.classify(s)] += n
+    out.append("objects by kind (by the words of their paths): " + ", ".join(f"{k or 'unknown'} {cat[k]}" for k in AREAS) + f", other things {cat['other']}, unknown {cat['']} of {len(objects)}")
+    left = Counter({s: n for s, n in oc.items() if not patterns.classify(s)})
+    out.append("objects no word took (most frequent): " + ", ".join(f"{os.path.basename(s)} x{n}" for s, n in left.most_common(top)))
     sc = Counter(s[0] for s in splines)
     rails = sum(n for s, n in sc.items() if re.search(RAIL_SPLINE, s) and not re.search(NOT_RAIL, s))
     water = sum(n for s, n in sc.items() if re.search(WATER_SPLINE, s))
@@ -117,7 +162,9 @@ def area_of(points, cell, reach, min_cells, grow, box):
     W, H = int((x1 - x0) / cell) + 3, int((y1 - y0) / cell) + 3
     m = np.zeros((H, W), bool)
     for (x, y) in points:
-        m[int((y - y0) / cell) + 1, int((x - x0) / cell) + 1] = True
+        r, c = int((y - y0) / cell) + 1, int((x - x0) / cell) + 1
+        if 0 <= r < H and 0 <= c < W:
+            m[r, c] = True
     r = max(1, int(round(reach / cell)))
     yy, xx = np.ogrid[-r:r + 1, -r:r + 1]
     m = ndimage.binary_dilation(m, structure=(xx * xx + yy * yy) <= r * r)
@@ -135,16 +182,38 @@ def area_of(points, cell, reach, min_cells, grow, box):
 def build_own_surface(map_dir, grid, tiles, out_dir, relief=0.0, log=print, omsi=None):
     """Writes surface.oms from the map's own tiles. Returns a summary."""
     OMSI[0] = omsi
-    splines, objects = scan(map_dir, grid)
-    for l in kinds_report(splines, objects):
+    splines, objects = scan(map_dir, grid, headings=True)
+    for l in kinds_report(splines, [o[:3] for o in objects]):
         log("  " + l)
     xs, ys = [t[0] for t in tiles], [t[1] for t in tiles]
     ox, oy = min(xs) * grid, min(ys) * grid
     ORIGIN[0], ORIGIN[1] = ox, oy
     box = (ox - grid, oy - grid, (max(xs) + 2) * grid, (max(ys) + 2) * grid)
+    # a stray object or spline far outside the map's tiles (a broken position in a tile file) must not stretch or break the raster
+    n_o, n_s = len(objects), len(splines)
+    objects = [o for o in objects if box[0] <= o[1] <= box[2] and box[1] <= o[2] <= box[3]]
+    splines = [s for s in splines if all(box[0] <= x <= box[2] and box[1] <= y <= box[3] for x, y in s[1])]
+    if len(objects) < n_o or len(splines) < n_s:
+        log(f"  ignored {n_o - len(objects)} objects and {n_s - len(splines)} splines lying outside the map's tiles")
     fills = {}
-    for name, (cls, pat, cell, reach, min_cells, grow) in AREAS.items():
-        pts = [(x, y) for s, x, y in objects if re.search(pat, s) and not (name == "built" and re.search(NOT_BUILDINGS, s))]
+    # buildings with a mesh get their own outline, placed as the game places the object; the rest of the buildings stay in the raster
+    outlined = set()
+    if OMSI[0]:
+        fp = footprints.Footprints(OMSI[0])
+        for n, (s, x, y, hd) in enumerate(objects):
+            kind = patterns.classify(s)
+            if kind in ("other", "water", "sport", "farm", "forest", "grass"):
+                continue
+            loc = fp.local(s)
+            if loc and (kind == "built" or loc[2]):
+                poly = fp.place(s, x, y, hd)
+                for tri in triangulate([(px - ORIGIN[0], py - ORIGIN[1]) for px, py in poly]):
+                    k = (math.floor((tri[0] + tri[2] + tri[4]) / 3 / CHUNK), math.floor((tri[1] + tri[3] + tri[5]) / 3 / CHUNK))
+                    fills.setdefault(k, {}).setdefault(2, []).extend(tri)
+                outlined.add(n)
+        log(f"  built: {len(outlined)} buildings drawn with their own outline (from their meshes)")
+    for name, (cls, cell, reach, min_cells, grow) in AREAS.items():
+        pts = [(x, y) for n, (s, x, y, hd) in enumerate(objects) if n not in outlined and patterns.classify(s) == name]
         if not pts:
             continue
         m, mx, my = area_of(pts, cell, reach, min_cells, grow, box)
@@ -166,17 +235,20 @@ def build_own_surface(map_dir, grid, tiles, out_dir, relief=0.0, log=print, omsi
             cur.append(q)
         lines.setdefault(key if key is not None else (0, 0), []).append((cls, 0, width, 0xFFFFFFFF, cur))
 
-    n_rail = n_water = 0
+    n_rail = n_water = n_street = 0
     for sli, pts in splines:
         if len(pts) < 2:
             continue
         if is_rail(OMSI[0], sli):
             put(1, 4.0, pts)
             n_rail += 1
+        elif OMSI[0] and is_street(OMSI[0], sli):
+            put(3, 0.0, pts)                    # a street: the very spline the game's roads run on
+            n_street += 1
         elif re.search(WATER_SPLINE, sli):
             put(0, 6.0, pts)
             n_water += 1
-    log(f"  lines: {n_rail} rail pieces, {n_water} water-course pieces")
+    log(f"  lines: {n_street} street splines (the map's own), {n_rail} rail pieces, {n_water} water-course pieces")
     n_c = 0
     if relief > 0:
         import terrain
@@ -224,6 +296,12 @@ def is_rail(omsi, sli):
     return bool(k.get("2")) or bool(re.search(RAIL_SPLINE, sli))
 
 
+def is_street(omsi, sli):
+    """A spline of a street: it carries a street lane ([path] 0 of its .sli) and is no rail. A spline whose .sli is not on this
+    machine cannot be told, and is left out: that is a gap of the map's own files, not something to guess."""
+    return bool(path_kinds(omsi, sli).get("0")) and not is_rail(omsi, sli)
+
+
 def add_rails(surface_path, omsi, map_dir, grid, replace=False, log=print):
     """Puts the map's OWN rails (class 1, the class the city map draws as a railway) into an existing surface.oms, in its own frame.
     With replace=True the rail lines the surface had (OpenStreetMap's, bent to the map) go. Returns the number of pieces."""
@@ -261,3 +339,70 @@ def add_rails(surface_path, omsi, map_dir, grid, replace=False, log=print):
     surfacefile.write_surface(surf, surface_path)
     log(f"  the map's own rails: {n} pieces put in {surface_path}")
     return n
+
+
+# ---------------------------------------------------------------------------------------------------- the streets
+def add_streets(surface_path, omsi, map_dir, grid, log=print, name_reach=40.0):
+    """Puts the map's OWN streets (the splines that carry a street lane: the very ones the game's roads run on) into an existing
+    surface.oms as street lines (class 3, or 4 with a limit), in its own frame, and takes the streets the surface had before
+    (OpenStreetMap's, drawn where OpenStreetMap has them, not where the map does) out. Each own street keeps the NAME, and the
+    speed limit, of the nearest street of the old ones within `name_reach` metres, so that names still come from the real
+    city while the geometry is the map's. Returns (streets, named)."""
+    from scipy.spatial import cKDTree
+    surf = surfacefile.read_surface(surface_path)
+    ox, oy = surf["origin"]
+    OMSI[0] = omsi
+    chunk = surf["chunk"]
+    old_pts, old_info = [], []
+    for k, (f, ls, lb) in surf["chunks"].items():
+        keep = []
+        for ln in ls:
+            cls, fl, w, nm, pts = ln
+            if cls in (3, 4):
+                xy = list(zip(pts[0::2], pts[1::2]))
+                for a, b in zip(xy, xy[1:]):
+                    n = max(1, int(math.dist(a, b) / 12))
+                    for j in range(n + 1):
+                        old_pts.append((a[0] + (b[0] - a[0]) * j / n, a[1] + (b[1] - a[1]) * j / n))
+                        old_info.append((cls, fl, w, nm))
+            else:
+                keep.append(ln)
+        surf["chunks"][k] = (f, keep, lb)
+    tree = cKDTree(old_pts) if old_pts else None
+    splines, _ = scan(map_dir, grid, attachments=False)
+    n = named = 0
+    for sli, pts in splines:
+        if len(pts) < 2 or not is_street(omsi, sli):
+            continue
+        rel = rdp([(x - ox, y - oy) for x, y in pts], 1.0)
+        info = (3, 0, 0.0, 0xFFFFFFFF)
+        if tree is not None:
+            samples = [rel[i] for i in range(len(rel))] + [((a[0] + b[0]) / 2, (a[1] + b[1]) / 2) for a, b in zip(rel, rel[1:])]
+            dist, idx = tree.query(samples)
+            votes = {}
+            for dd, ii in zip(dist, idx):
+                if dd <= name_reach and old_info[ii][3] != 0xFFFFFFFF:
+                    votes[old_info[ii]] = votes.get(old_info[ii], 0) + 1
+            if votes:
+                info = max(votes, key=votes.get)
+                named += 1
+        cls, fl, w, nm = info
+        cur, key, pieces = [rel[0]], None, []
+        for p, q in zip(rel, rel[1:]):
+            kk = (math.floor((p[0] + q[0]) / 2 / chunk), math.floor((p[1] + q[1]) / 2 / chunk))
+            if key is None:
+                key = kk
+            if kk != key:
+                pieces.append((key, cur))
+                cur, key = [p], kk
+            cur.append(q)
+        pieces.append((key, cur))
+        for k, c in pieces:
+            if len(c) >= 2:
+                f, ls, lb = surf["chunks"].get(k, ({}, [], []))
+                ls.append((cls, fl, w, nm, [v for p in c for v in p]))
+                surf["chunks"][k] = (f, ls, lb)
+        n += 1
+    surfacefile.write_surface(surf, surface_path)
+    log(f"  the map's own streets: {n} splines put in the package, {named} named from the real streets nearby")
+    return n, named

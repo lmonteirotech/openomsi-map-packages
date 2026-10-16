@@ -111,10 +111,12 @@ def build_surface(g, tiles, out_dir, cache, profile="full", contours=0.0, distri
     # --- 1. the blocks that have a tile
     blocks = sorted({(tx // BLOCK, ty // BLOCK) for tx, ty in tiles})
     elements = {}
-    for n, (bx, by) in enumerate(blocks, 1):
-        s, w, nn, e = box(bx * BLOCK - 1, by * BLOCK - 1, (bx + 1) * BLOCK + 1, (by + 1) * BLOCK + 1)
+    block_q = osm.water_block_query if a.minimal else osm.block_query
+    boxes = [box(bx * BLOCK - 1, by * BLOCK - 1, (bx + 1) * BLOCK + 1, (by + 1) * BLOCK + 1) for bx, by in blocks]
+    osm.plan([block_q(*bb) for bb in boxes], a.cache)           # how many are still to ask, and how long it will take
+    for n, (s, w, nn, e) in enumerate(boxes, 1):
         print(f"block {n}/{len(blocks)} ...", flush=True)
-        for el in osm.overpass((osm.water_block_query if a.minimal else osm.block_query)(s, w, nn, e), a.cache).get("elements", []):
+        for el in osm.overpass(block_q(s, w, nn, e), a.cache).get("elements", []):
             elements[(el["type"], el["id"])] = el
     print(len(elements), "elements")
 

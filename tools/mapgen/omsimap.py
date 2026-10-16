@@ -31,7 +31,7 @@ sys.stdout.reconfigure(encoding="utf-8")
 MODAL_RULES = [
     (r"pan am|mi-8|aircraft|flug", "skip"),
     (r"gz_|g_z|güter|gueter|freight|ohe|kolej|pkp", "skip"),     # freight is no line a passenger takes
-    (r"u-bahn|metro|subway", "metro"),
+    (r"u-bahn|\bmetro\b|\bmetr[oô]\b|metrobahn|subway", "metro"),      # the WORD: "metropolitano" is a bus
     (r"s-bahn|regio|fernzug|zug|train|rail", "rail"),
     (r"tram|strassenbahn|straßenbahn|vlt", "tram"),
 ]

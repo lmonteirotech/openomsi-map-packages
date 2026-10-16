@@ -19,6 +19,23 @@ python mapgen.py --omsi "C:/Games/OMSI 2" --map "My_Fictional_Map" --mode own --
 Then copy the output folder to `<OMSI 2 or openOMSI content folder>/Maps/<Map>/openomsi-realmap/`. `REPORT.md` in the output says
 what was found and whether the rules hold.
 
+
+## The network: Overpass and Nominatim (errors 500 and 504, and how long it takes)
+
+The real layers come from OpenStreetMap through two free public services, and both are often busy. `osm.py` is built for that:
+
+- **Servers.** Overpass is asked on `overpass-api.de`, `maps.mail.ru`, `overpass.private.coffee` and `overpass.kumi.systems`, in turn. A server that
+  answers 500, 502, 503, 504, 429 or nothing **rests** (45 s, doubled for each failure in a row, up to 15 minutes; a `Retry-After` header is obeyed) and the
+  next one gets the query at once; only when all of them rest does the run wait, and it says so. The one that answered goes first next time.
+  Your own server, or another public one: `--overpass https://my.server/api/interpreter` (repeat it) or the variable `OVERPASS_URLS`.
+- **Pauses.** At least 5 s between two Overpass queries (`--pause SECONDS` raises it) and, after a slow answer, one and a half times what that answer took.
+  The place search (Nominatim) waits 1.5 s between requests (their rule is one a second); if it answers 5xx or 429 the place is asked of Photon (Komoot), which has
+  the same data. `--at LAT,LON` skips the place search altogether.
+- **The forecast.** Before the queries the run says how many are still to ask and how long that should take ("33 of 40 queries still to ask ... expect about
+  18 min"), and after each answer how many are left and about how long. The estimate starts from a guess and follows the answers it gets; busy servers can make it several
+  times longer. Every answer is kept in the cache folder: a run that is stopped, or fails, resumes where it was, and a second run asks for nothing.
+- **Tests without a network:** `python test_osm.py`.
+
 ## What it does (the six steps are the six blocks of `main()` in `mapgen.py`)
 
 | # | Step | File | In plain words |

@@ -1,0 +1,10 @@
+<svg width="200" height="200" viewBox="0 0 200 200" fill="none" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="openOMSI Map Packages"><title>openOMSI Map Packages</title><g>
+  <rect x="0" y="0" width="200" height="200" rx="44" fill="#F78034"/>
+  <g fill="none" stroke="#fff" stroke-opacity=".55" stroke-width="7" stroke-linecap="round">
+    <path d="M18 150 C52 118 86 160 120 128 S168 104 184 112"/>
+    <path d="M18 174 C56 142 92 184 128 152 S172 132 184 138"/>
+    <path d="M18 126 C48 98 80 134 112 104 S156 80 184 88"/>
+  </g>
+  <path d="M100 30 C73 30 54 50 54 75 C54 106 100 150 100 150 C100 150 146 106 146 75 C146 50 127 30 100 30 Z" fill="#fff"/>
+  <circle cx="100" cy="75" r="17" fill="#F78034"/>
+</g></svg>
