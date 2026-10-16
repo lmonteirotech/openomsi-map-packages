@@ -6,7 +6,7 @@
 </p>
 
 <p align="center">
-  <a href="https://github.com/lmonteirotech/openomsi-map-packages/releases/latest"><img alt="Version" src="https://img.shields.io/github/v/release/lmonteirotech/openomsi-map-packages?label=version&color=f47f30&style=for-the-badge"></a>
+  <a href="https://github.com/lmonteirotech/openomsi-map-packages/releases/latest"><img alt="Version" src="https://img.shields.io/github/v/release/lmonteirotech/openomsi-map-packages?label=version&color=f47f30&style=for-the-badge&cacheSeconds=3600"></a>
   <a href="LICENSE"><img alt="License" src="https://img.shields.io/github/license/lmonteirotech/openomsi-map-packages?style=for-the-badge"></a>
 </p>
 
@@ -38,6 +38,15 @@ A package is plain data, so more than one program can show it. Where each one st
 released under the MIT licence, copyright of its author. The logo of this repository (`docs/brand/`) is made from the openOMSI
 wordmark to say that the packages are made for it; it does not make this repository part of the project, and nobody here speaks for it.
 OMSI and OMSI 2 are trademarks of their respective owners. This repository is independent and is not affiliated with, or endorsed by, any of them.
+
+## The app: Map Package Creator
+
+**[openOMSI/openHUD Map Package Creator](app/)** (`ombr-mapcreator.exe`, Windows) is a program to look at, check, annotate, edit and **generate** these packages without Python and without opening the game:
+layers, lines, schedules, inspecting any point, notes, edits that can be undone, and the whole generator of [tools/mapgen](tools/mapgen/) inside one window (17 languages, dark and light).
+It is **freeware** (free to use and share unchanged, not to modify; see its [EULA](app/EULA.txt)) and has its own guide with pictures: [app/README.md](app/README.md) ([Português](app/README.pt-BR.md)).
+Download it from the [releases](https://github.com/lmonteirotech/openomsi-map-packages/releases) (`app-v1.0.0`).
+
+[![The Map Package Creator: layers of a package over the map](app/images/layers.jpg)](app/README.md)
 
 ## Packages
 
