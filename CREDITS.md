@@ -33,9 +33,9 @@ modify the map, it is a separate folder that OMSI 2 itself ignores.
 
 ## Software
 
-- The generator and the documents are by [Leo Monteiro](https://github.com/lmonteirotech), MIT licence ([LICENSE](LICENSE)); the project is developed with
+- The generator and the documents are by [Leo Monteiro](https://github.com/lmonteirotech), MIT licence ([LICENSE](LICENSE)); the **Map Package Creator** app (`app/`) is proprietary freeware under its own [EULA](app/EULA.txt); the project is developed with
   an AI partner (see [AI_DISCLAIMER.md](AI_DISCLAIMER.md)).
-- **openOMSI** ([openOMSI-org/openOMSI](https://github.com/openOMSI-org/openOMSI), MIT) reads the packages; the logo of this repository is made from its wordmark.
+- **openOMSI** ([openOMSI-org/openOMSI](https://github.com/openOMSI-org/openOMSI), GNU AGPL-3.0-only) reads the packages; the logo of this repository is made from its wordmark.
 - **Project Depot** ([omsimodsbr/depot](https://github.com/omsimodsbr/depot)); **OmsiLaunch** ([lmonteirotech/OmsiLaunch](https://github.com/lmonteirotech/OmsiLaunch))
   and **openHUD** ([lmonteirotech/openHUD-for-omsilaunch](https://github.com/lmonteirotech/openHUD-for-omsilaunch)) for OMSI 2 itself.
 - OMSI and OMSI 2 are trademarks of their respective owners.

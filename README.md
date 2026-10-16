@@ -35,7 +35,7 @@ A package is plain data, so more than one program can show it. Where each one st
 ## Brand
 
 **openOMSI** (the name and its logo) belongs to the openOMSI project: [openOMSI-org/openOMSI](https://github.com/openOMSI-org/openOMSI),
-released under the MIT licence, copyright of its author. The logo of this repository (`docs/brand/`) is made from the openOMSI
+released under the GNU AGPL-3.0-only licence (it was MIT before), copyright of its author. The logo of this repository (`docs/brand/`) is made from the openOMSI
 wordmark to say that the packages are made for it; it does not make this repository part of the project, and nobody here speaks for it.
 OMSI and OMSI 2 are trademarks of their respective owners. This repository is independent and is not affiliated with, or endorsed by, any of them.
 
@@ -332,5 +332,6 @@ This project is developed with an AI partner, Claude Sonnet 5.5: see [AI_DISCLAI
 
 ## Licences
 
-Code and documentation: MIT ([LICENSE](LICENSE)). The OpenStreetMap data inside the packages: ODbL 1.0
-([LICENSE-DATA.md](LICENSE-DATA.md)). Credit the maps and their authors when you share a package.
+Code (the generator in `tools/mapgen`), documentation and the packages' own files: MIT ([LICENSE](LICENSE)). The OpenStreetMap data inside the packages: ODbL 1.0
+([LICENSE-DATA.md](LICENSE-DATA.md)). The **Map Package Creator** (`ombr-mapcreator.exe`, in [app/](app/)) is **proprietary freeware**, under its own [EULA](app/EULA.txt), not MIT.
+The openOMSI project, which reads the packages, is under the GNU AGPL-3.0-only. Credit the maps and their authors when you share a package.
