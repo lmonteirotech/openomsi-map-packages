@@ -304,6 +304,10 @@ The scripts of [tools/mapgen](tools/mapgen/) changed in these ways (details in i
   pause between queries, falls back from Nominatim to Photon, says how many queries are left and how long they should take, and keeps every
   answer. New options `--overpass URL` (repeatable) and `--pause SECONDS`; `python test_osm.py` tests it without a network.
 
+## AI
+
+This project is developed with an AI partner, Claude Sonnet 5.5: see [AI_DISCLAIMER.md](AI_DISCLAIMER.md).
+
 ## Licences
 
 Code and documentation: MIT ([LICENSE](LICENSE)). The OpenStreetMap data inside the packages: ODbL 1.0
