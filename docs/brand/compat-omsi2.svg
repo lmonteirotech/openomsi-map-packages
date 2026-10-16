@@ -1,0 +1,7 @@
+<svg width="360" height="124" viewBox="0 0 360 124" fill="none" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="Compatible with OMSI 2 (via OmsiLaunch and openHUD)">
+<title>Compatible with OMSI 2 (via OmsiLaunch and openHUD)</title>
+<rect x="1" y="1" width="358" height="122" rx="16" fill="#14171c" stroke="#3a3f47" stroke-width="2"/>
+<text x="180" y="30" text-anchor="middle" font-family="Segoe UI, Helvetica, Arial, sans-serif" font-size="13" font-weight="700" letter-spacing="3" fill="#f78034">COMPATIBLE WITH</text>
+<g transform="translate(0 0)"><text x="180" y="76" text-anchor="middle" font-family="Segoe UI, Helvetica, Arial, sans-serif" font-size="32" font-weight="800" fill="#fff">OMSI <tspan fill="#f78034">2</tspan></text></g>
+<text x="180" y="108" text-anchor="middle" font-family="Segoe UI, Helvetica, Arial, sans-serif" font-size="13" fill="#aab0b8">via OmsiLaunch / openHUD</text>
+</svg>

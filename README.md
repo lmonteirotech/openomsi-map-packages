@@ -1,10 +1,43 @@
-# openomsi-map-packages
+<p align="center">
+  <picture>
+    <source media="(prefers-color-scheme: dark)" srcset="docs/brand/logo-light.svg">
+    <img alt="openOMSI Map Packages" src="docs/brand/logo-dark.svg" width="520">
+  </picture>
+</p>
 
-Map packages for [openOMSI](https://github.com/openOMSI-Project/openOMSI): the pre-built picture and the lines of a map, so that
+<p align="center">
+  <a href="https://github.com/lmonteirotech/openomsi-map-packages/releases/latest"><img alt="Version" src="https://img.shields.io/github/v/release/lmonteirotech/openomsi-map-packages?label=version&color=f47f30&style=for-the-badge"></a>
+  <a href="LICENSE"><img alt="License" src="https://img.shields.io/github/license/lmonteirotech/openomsi-map-packages?style=for-the-badge"></a>
+</p>
+
+Map packages for [openOMSI](https://github.com/openOMSI-org/openOMSI): the pre-built picture and the lines of a map, so that
 the navigator and the city map show more than the lane network, and the generator that makes them.
 
 A package is one folder, `openomsi-realmap`, next to a map's files. OMSI 2 itself (Omsi.exe) does not read it and ignores it, so
 a map made for both games loses nothing. The format is described in [docs/MAP_PACKAGE.md](docs/MAP_PACKAGE.md).
+
+## Compatibility
+
+<p align="center">
+  <a href="https://github.com/openOMSI-org/openOMSI"><img alt="Compatible with openOMSI" src="docs/brand/compat-openomsi.svg" height="96"></a>
+  <a href="https://github.com/omsimodsbr/depot"><img alt="Compatible with Project Depot" src="docs/brand/compat-depot.svg" height="96"></a>
+  <a href="https://github.com/lmonteirotech/OmsiLaunch"><img alt="Compatible with OMSI 2, via OmsiLaunch and openHUD" src="docs/brand/compat-omsi2.svg" height="96"></a>
+</p>
+
+A package is plain data, so more than one program can show it. Where each one stands:
+
+| Program | What it does with a package | Repository |
+|---|---|---|
+| **openOMSI** | reads it and draws it in the navigator, the city map and the launcher's route map | [openOMSI-org/openOMSI](https://github.com/openOMSI-org/openOMSI) |
+| **Project Depot** | compatible: it can read the same folder | [omsimodsbr/depot](https://github.com/omsimodsbr/depot) |
+| **OMSI 2** (the original game), through **OmsiLaunch** and **openHUD** | OMSI 2 itself ignores the folder; OmsiLaunch starts the session and openHUD shows the map, the lines and the street over the game | [lmonteirotech/OmsiLaunch](https://github.com/lmonteirotech/OmsiLaunch), [lmonteirotech/openHUD-for-omsilaunch](https://github.com/lmonteirotech/openHUD-for-omsilaunch) |
+
+## Brand
+
+**openOMSI** (the name and its logo) belongs to the openOMSI project: [openOMSI-org/openOMSI](https://github.com/openOMSI-org/openOMSI),
+released under the MIT licence, copyright of its author. The logo of this repository (`docs/brand/`) is made from the openOMSI
+wordmark to say that the packages are made for it; it does not make this repository part of the project, and nobody here speaks for it.
+OMSI and OMSI 2 are trademarks of their respective owners. This repository is independent and is not affiliated with, or endorsed by, any of them.
 
 ## Packages
 
@@ -227,6 +260,49 @@ goes wrong, how each error is found and the numbers measured are in [docs/ROAD-N
 Put the package in `packages/<name>/` with a README that names the **map and its authors**, the mode, the exact command that made it
 and its data. Credit OpenStreetMap contributors (ODbL). Never include files of the map (tiles, textures, models, scripts): a package
 holds only what was worked out from them.
+
+## More results
+
+The pictures of the work in openOMSI (city map Shift+M, small map Shift+N, launcher), all taken with a development build and the packages of this repository.
+
+**The surface under the roads, with and without a package** (city map and small map, dark and light):
+
+| Without | With |
+|---|---|
+| ![City map, dark, without a package](docs/images/pr-a/city-dark-without-package.jpg) | ![City map, dark, with a package](docs/images/pr-a/city-dark-with-package.jpg) |
+| ![Small map, dark, without a package](docs/images/pr-a/minimap-dark-without-package.jpg) | ![Small map, dark, with a package](docs/images/pr-a/minimap-dark-with-package.jpg) |
+| ![Launcher route map without a package](docs/images/pr-a2/launcher-route-map-without-package.jpg) | ![Launcher route map with a package](docs/images/pr-a2/launcher-route-map-with-package.jpg) |
+
+**Names, icons, the street and the district under the bus** (Berlin-Spandau, far and near, and the row of the small map):
+
+![Berlin-Spandau city map with names, icons and chips](docs/images/pr-b/spandau-city-names-icons-chips.jpg)
+![Berlin-Spandau city map, closer](docs/images/pr-b/spandau-city-closer.jpg)
+![Berlin-Spandau small map with the street row](docs/images/pr-b/spandau-minimap-row.jpg)
+
+**The lines panel** (Berlin-Spandau: every line of the map, one opened with its routes):
+
+![The lines panel of Berlin-Spandau](docs/images/pr-c1/spandau-lines-panel.jpg)
+![A line with its second route](docs/images/pr-c1/spandau-lines-route2.jpg)
+
+**The synthetic example** that ships with openOMSI (no data of OMSI 2 or OpenStreetMap), with a bus and a tram line:
+
+![Example, bus line E1](docs/images/pr-c1/example-line-e1.jpg) ![Example, tram line T1](docs/images/pr-c1/example-tram-t1.jpg)
+
+## What changed in the generator
+
+The scripts of [tools/mapgen](tools/mapgen/) changed in these ways (details in its [README](tools/mapgen/README.md)):
+
+- **More from a map's own files.** `o3d.py` reads the meshes of the map's objects and `footprints.py` takes the **outline of each building** from them, so
+  mode `own` draws buildings as they stand and not as boxes. Objects outside the area of the map are left out.
+- **Names in six languages.** `patterns.py` sorts the objects and splines of a map (trees, buildings, water, sports grounds, rails, streets) by their
+  names in English, German, Polish, Portuguese, Spanish and French; the lists are plain regular expressions meant to be edited. A line called
+  "METROPOLITANO" is no longer taken for a metro line.
+- **Spline attachments.** The `[splineAttachement]` rows of a map (kerbs, fences, rails laid along a spline) count where the map has them.
+- **Streets in every mode.** A street is a road whose first lane is a street lane; it is drawn as a line of class 3 and, when OpenStreetMap is in use, takes the
+  name from it. Where the map's roads are wrong the map is wrong: the generator does not guess a street from its name.
+- **A network layer that copes with busy servers.** `osm.py` asks four Overpass servers in turn, lets a failing one rest, obeys `Retry-After`, keeps a
+  pause between queries, falls back from Nominatim to Photon, says how many queries are left and how long they should take, and keeps every
+  answer. New options `--overpass URL` (repeatable) and `--pause SECONDS`; `python test_osm.py` tests it without a network.
 
 ## Licences
 

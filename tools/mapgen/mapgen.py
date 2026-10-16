@@ -119,8 +119,11 @@ def main():
     ap.add_argument("--min-splines", type=int, help="a tile counts as the map with this many splines (default 3 on a world map, else 1)")
     ap.add_argument("--no-eras", action="store_true", help="ignore the Chrono folders (eras) of the map")
     ap.add_argument("--name", help="the map's name for the manifest")
+    ap.add_argument("--overpass", action="append", default=[], metavar="URL", help="an Overpass server to try first (repeat for several; also OVERPASS_URLS); the public ones are the fallbacks")
+    ap.add_argument("--pause", type=float, help="seconds to wait between two Overpass queries (default 5, never less than 1; longer after a slow answer)")
     ap.add_argument("--cache", default=os.path.join(os.path.dirname(os.path.abspath(__file__)), "cache"), help="where downloads are kept")
     a = ap.parse_args()
+    osm.configure(a.overpass, a.pause)
     t0 = time.time()
 
     # 1 ---------------------------------------------------------------------------------------------------
@@ -213,6 +216,9 @@ def main():
     if mode in ("shore", "fitted"):
         # the railway is the map's own: its splines carry rail lanes. Drawn as a railway (class 1), not left to look like a road
         ownmap.add_rails(os.path.join(a.out, "surface.oms"), a.omsi, map_dir, grid, replace=True)
+    if mode != "own":
+        # the streets are the map's own splines too (the game's roads); OpenStreetMap only lends their names and limits
+        ownmap.add_streets(os.path.join(a.out, "surface.oms"), a.omsi, map_dir, grid)
     print(f"  surface.oms: {os.path.getsize(os.path.join(a.out, 'surface.oms')) / 1e6:.2f} MB")
 
     # 6 ---------------------------------------------------------------------------------------------------
