@@ -45,6 +45,7 @@ OMSI and OMSI 2 are trademarks of their respective owners. This repository is in
 |---|---|---|---|
 | [berlin-spandau](packages/berlin-spandau/) | Berlin-Spandau (stock map of OMSI 2) | water, green areas, woods, rivers, rail, district borders and names, streets with their speed limits, stations, relief (1 m contour lines), and the lines of every era the map has (bus, metro, rail) with timetables | OpenStreetMap (ODbL) + the map's own timetable |
 | [projekt-szczecin](packages/projekt-szczecin/) | Projekt Szczecin 4.0.1 | the shore (the water of the real Szczecin set by north and position; the map itself is not aligned with reality) and the lines of the map (bus and tram) with timetables, on the map's own roads | OpenStreetMap (ODbL) + the map's own timetable |
+| [fikcyjny-szczecin](packages/fikcyjny-szczecin/) | Fikcyjny Szczecin 2.50.02 (a made-up map, by MrYanke$) | woods, grassland, farmland, 2,118 buildings with their own outline, the map's railway and water courses, streets, relief (contour lines every 5 m, from the map's own ground) and its 40 bus lines with timetables | the map's own tiles and timetable (no OpenStreetMap) |
 
 ## What a package adds
 
@@ -67,6 +68,12 @@ The relief of the real terrain (contour lines every metre of height, with the he
 **Projekt Szczecin**: the map is not aligned with reality, so its package carries only the shore and the rivers of the real city, set by north and position, and the lines of the map. The roads stay the map's own, and none lies in the water.
 
 ![Projekt Szczecin: the shore and the rivers under the map's own roads](docs/images/projekt-szczecin-shore.jpg)
+
+**Fikcyjny Szczecin**: a made-up map, so there is no real city to compare with: the package is measured from the map's own tiles (woods, buildings with their own outline, the railway, water courses, streets and the relief of its own ground).
+
+![Fikcyjny Szczecin in the city map](docs/images/fikcyjny-szczecin/city-map.jpg)
+
+![Fikcyjny Szczecin with the relief (contour lines) on](docs/images/fikcyjny-szczecin/relief.jpg)
 
 ## Using a package
 
@@ -303,6 +310,12 @@ The scripts of [tools/mapgen](tools/mapgen/) changed in these ways (details in i
 - **A network layer that copes with busy servers.** `osm.py` asks four Overpass servers in turn, lets a failing one rest, obeys `Retry-After`, keeps a
   pause between queries, falls back from Nominatim to Photon, says how many queries are left and how long they should take, and keeps every
   answer. New options `--overpass URL` (repeatable) and `--pause SECONDS`; `python test_osm.py` tests it without a network.
+
+## Credits
+
+The maps belong to their authors, who must be credited when a package is shared: **Berlin-Spandau** (stock map of OMSI 2, by its developers),
+**Projekt Szczecin** (mpaw82 and tomass94, with Kruchu, Darek59 and Nick™) and **Fikcyjny Szczecin** (MrYanke$ and the people he thanks).
+The full list, with what each one made, is in [CREDITS.md](CREDITS.md). OpenStreetMap data: (c) OpenStreetMap contributors, ODbL 1.0.
 
 ## AI
 
